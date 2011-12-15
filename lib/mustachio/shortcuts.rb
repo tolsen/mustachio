@@ -1,7 +1,7 @@
 require 'face'
 
 Magickly.dragonfly.configure do |c|
-  c.log_commands = true
+#  c.log_commands = true
   
   c.analyser.add :face_data do |temp_object|
     Mustachio.face_data(temp_object)
