@@ -34,31 +34,27 @@ module Mustachio
       end
       @@mustaches = staches
     end
-    
-    
+
     # URLs are preferred, because the detection results can be cached by Face.com
     def face_data(file_or_job)
-      # get the URL or file object, if needed
-      if file_or_job.is_a? Dragonfly::Job
-        uri = file_or_job.uid
-        if Addressable::URI.parse(uri).absolute?
-          file_or_job = uri
+      face_data =
+        case file_or_job
+        when Dragonfly::Job
+          uri = file_or_job.uid
+          if Addressable::URI.parse(uri).absolute?
+            face_data_for_url uri, file_or_job
+          else
+            face_data_for_file file_or_job.temp_object.file
+          end
+        when Dragonfly::TempObject
+          face_data_for_file file_or_job.file
+        when File
+          face_data_for_file file_or_job
         else
-          file_or_job = file_or_job.temp_object
+          raise(ArgumentError,
+                "A #{file_or_job.class} is not a valid argument for #face_data.  Please provide a File or a Dragonfly::Job.")
         end
-      elsif file_or_job.is_a? Dragonfly::TempObject
-        file_or_job = file_or_job.file
-      end
-      
-      # retrieve face data
-      if file_or_job.is_a? String
-        face_data = Mustachio.face_client.faces_detect(:urls => [file_or_job], :attributes => 'none')
-      elsif file_or_job.is_a? File
-        face_data = Mustachio.face_client.faces_detect(:file => file_or_job, :attributes => 'none')
-      else
-        raise ArgumentError, "A #{file_or_job.class} is not a valid argument for #face_data.  Please provide a File or a Dragonfly::Job."
-      end
-      
+
       face_data['photos'].first
     end
     
@@ -117,6 +113,24 @@ module Mustachio
         :center_y => (adj_top + adj_bottom) / 2
       }
     end
+
+    private
+
+    def face_data_for_file file
+      Mustachio.face_client.faces_detect(:file => file, :attributes => 'none')
+    end
+
+    def face_data_for_url url, job
+      if job && (request_url = job.app.datastore.request_url)
+        uri = Addressable::URI.parse request_url
+        uri.query = nil
+        uri.query_values = { "thumb" => "900x900", "src" => url }
+        url = uri.to_s
+      end
+        
+      Mustachio.face_client.faces_detect(:urls => [url], :attributes => 'none')
+    end
+    
   end
   
   

@@ -4,7 +4,7 @@ gem 'sinatra', '~> 1.2.3', :require => 'sinatra/base'
 gem 'dragonfly', '~> 0.9.0'
 gem('magickly',
     :git => 'git://github.com/tolsen/magickly.git',
-    :ref => '7e38a9ca151c9cf826c2bd34cd417784d2742cb9')
+    :ref => '4b0d75b5e650b2e9138e2ce5d61fd482d13e2b80')
 gem 'addressable', '~> 2.2.4', :require => 'addressable/uri'
 gem 'haml', '~> 3.0'
 

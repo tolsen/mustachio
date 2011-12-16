@@ -1,7 +1,7 @@
 GIT
   remote: git://github.com/tolsen/magickly.git
-  revision: 7e38a9ca151c9cf826c2bd34cd417784d2742cb9
-  ref: 7e38a9ca151c9cf826c2bd34cd417784d2742cb9
+  revision: 4b0d75b5e650b2e9138e2ce5d61fd482d13e2b80
+  ref: 4b0d75b5e650b2e9138e2ce5d61fd482d13e2b80
   specs:
     magickly (1.3.0)
       activesupport (>= 2.0.0)
